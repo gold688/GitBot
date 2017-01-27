@@ -79,11 +79,6 @@ final class PullRequest
         return Status::all($this->getSha());
     }
 
-    public function getLastStatus(): Status
-    {
-        return $this->getStatus()[0];
-    }
-
     /**
      * @return Review[]
      */
@@ -101,6 +96,13 @@ final class PullRequest
         }
 
         return true;
+    }
+
+    public function passedAnalysis(): bool
+    {
+        $status = $this->getStatus();
+
+        return empty($status) || $status[0]->isSuccess();
     }
 
     public function merge(string $message, string $title): void
