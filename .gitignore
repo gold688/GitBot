@@ -1,0 +1,6 @@
+.idea
+vendor
+coverage
+tags
+.php_cs
+demo

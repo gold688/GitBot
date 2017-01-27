@@ -1,0 +1,33 @@
+{
+    "name": "dgame/git-bot",
+    "authors": [
+        {
+            "name": "Dgame",
+            "email": "rswhite4@googlemail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "knplabs/github-api": "2.0.1",
+        "php-http/guzzle6-adapter": "@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.*.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ],
+        "psr-4": {
+            "Dgame\\GitBot\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "phpunit"
+        ],
+        "coverage": [
+            "phpunit --coverage-clover=coverage"
+        ]
+    }
+}
