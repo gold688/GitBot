@@ -5,10 +5,8 @@
  - Auto-merging approved & passing PRs
  
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Dgame/GitBot/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Dgame/GitBot/?branch=master)
-
 [![Build Status](https://travis-ci.org/Dgame/GitBot.svg?branch=master)](https://travis-ci.org/Dgame/GitBot)
-
-PHP: `>= 7.1.0`
+![PHP Version](https://img.shields.io/badge/PHP-%3E%3D%207.1.0-lightgrey.svg)
 
 ## Currently supported:
  - Auto-merging approved & passing PRs
