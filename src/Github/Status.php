@@ -4,10 +4,22 @@ namespace Dgame\GitBot\Github;
 
 use Dgame\GitBot\Registry;
 
+/**
+ * Class Status
+ * @package Dgame\GitBot\Github
+ */
 final class Status
 {
+    /**
+     * @var array
+     */
     private $status = [];
 
+    /**
+     * Status constructor.
+     *
+     * @param array $status
+     */
     public function __construct(array $status)
     {
         $this->status = $status;
@@ -32,16 +44,25 @@ final class Status
         return $output;
     }
 
+    /**
+     * @return bool
+     */
     public function isFailure(): bool
     {
         return $this->status['state'] === 'failure';
     }
 
+    /**
+     * @return bool
+     */
     public function isPending(): bool
     {
         return $this->status['state'] === 'pending';
     }
 
+    /**
+     * @return bool
+     */
     public function isSuccess(): bool
     {
         return $this->status['state'] === 'success';

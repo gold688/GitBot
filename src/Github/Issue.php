@@ -5,10 +5,22 @@ namespace Dgame\GitBot\Github;
 use Dgame\GitBot\Registry;
 use Exception;
 
+/**
+ * Class Issue
+ * @package Dgame\GitBot\Github
+ */
 final class Issue
 {
+    /**
+     * @var array
+     */
     private $issue = [];
 
+    /**
+     * Issue constructor.
+     *
+     * @param array $issue
+     */
     public function __construct(array $issue)
     {
         $this->issue = $issue;
@@ -31,6 +43,11 @@ final class Issue
         return $issues;
     }
 
+    /**
+     * @param int $id
+     *
+     * @return Issue
+     */
     public static function one(int $id): self
     {
         $client     = Registry::instance()->getClient();
@@ -42,26 +59,41 @@ final class Issue
         return new self($issue);
     }
 
+    /**
+     * @return int
+     */
     public function getId(): int
     {
         return $this->issue['number'];
     }
 
+    /**
+     * @return string
+     */
     public function getTitle(): string
     {
         return $this->issue['title'];
     }
 
+    /**
+     * @return bool
+     */
     public function isOpen(): bool
     {
         return $this->issue['state'] === 'open';
     }
 
+    /**
+     * @return bool
+     */
     public function isClosed(): bool
     {
         return $this->issue['state'] === 'closed';
     }
 
+    /**
+     * @return bool
+     */
     public function isPullRequest(): bool
     {
         $repository = Registry::instance()->getRepositoryName();
@@ -70,6 +102,9 @@ final class Issue
         return $this->issue['html_url'] === 'https://github.com/' . implode('/', [$owner, $repository, 'pull', $this->getId()]);
     }
 
+    /**
+     * @return bool
+     */
     public function isIssue(): bool
     {
         $repository = Registry::instance()->getRepositoryName();
@@ -78,6 +113,10 @@ final class Issue
         return $this->issue['html_url'] === 'https://github.com/' . implode('/', [$owner, $repository, 'issues', $this->getId()]);
     }
 
+    /**
+     * @return PullRequest
+     * @throws Exception
+     */
     public function asPullRequest(): PullRequest
     {
         if (!$this->isPullRequest()) {
@@ -87,6 +126,9 @@ final class Issue
         return PullRequest::one($this->getId());
     }
 
+    /**
+     * (Re)open issue
+     */
     public function open(): void
     {
         $client     = Registry::instance()->getClient();
@@ -97,6 +139,9 @@ final class Issue
         $this->issue['state'] = 'open';
     }
 
+    /**
+     * Close issue
+     */
     public function close(): void
     {
         $client     = Registry::instance()->getClient();
