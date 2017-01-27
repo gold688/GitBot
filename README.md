@@ -4,10 +4,10 @@
  - Automated overviews about code-coverage, tests-coverage etc.
  - Auto-merging approved & passing PRs
 
-Currently supported:
+## Currently supported:
  - Auto-merging approved & passing PRs
 
-## Auto-Merge
+# Auto-Merge
 ```php
 <?php
 
