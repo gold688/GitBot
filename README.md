@@ -25,14 +25,11 @@ $client->authenticate('USERNAME', 'PASSWORD', Client::AUTH_HTTP_PASSWORD);
 Registry::instance()->setClient($client);
 Registry::instance()->setRepository('REPOSITORY', 'USERNAME');
 
-foreach (Issue::all() as $issue) {
-    if ($issue->isPullRequest()) {
-        $request = $issue->asPullRequest();
-        if ($request->isMergeable() && $request->passedAnalysis() && $request->isApproved()) {
-            print 'Try to merge PR #' . $request->getId() . PHP_EOL;
-            $request->merge('Auto-Merge', 'Auto-Merge');
-            print 'PR #' . $request->getId() . ' was successfully merged' . PHP_EOL;
-        }
+foreach (PullRequest::all() as $request) {
+    if ($request->isMergeable() && $request->passedAnalysis() && $request->isApproved()) {
+        print 'Try to merge PR #' . $request->getId() . PHP_EOL;
+        $request->merge('Auto-Merge', 'Auto-Merge');
+        print 'PR #' . $request->getId() . ' was successfully merged' . PHP_EOL;
     }
 }
 ```
