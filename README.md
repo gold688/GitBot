@@ -3,6 +3,12 @@
  - Automated references to github issues, trello, bug-tracking systems like bugzilla etc.
  - Automated overviews about code-coverage, tests-coverage etc.
  - Auto-merging approved & passing PRs
+ 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Dgame/GitBot/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Dgame/GitBot/?branch=master)
+
+[![Build Status](https://travis-ci.org/Dgame/GitBot.svg?branch=master)](https://travis-ci.org/Dgame/GitBot)
+
+PHP: `>= 7.1.0`
 
 ## Currently supported:
  - Auto-merging approved & passing PRs
