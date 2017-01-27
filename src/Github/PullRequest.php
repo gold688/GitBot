@@ -90,9 +90,17 @@ final class PullRequest
     /**
      * @return array
      */
-    public function getReviewer(): array
+    public function getRequestedReviewers(): array
     {
-        return Reviewer::all($this->getId());
+        return RequestedReviewer::all($this->getId());
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasReviewRequests(): bool
+    {
+        return !empty($this->getRequestedReviewers());
     }
 
     /**
@@ -148,7 +156,22 @@ final class PullRequest
      */
     public function isApproved(): bool
     {
-        return RequestedReviewer::of($this)->haveAllApproved();
+        if ($this->hasReviewRequests()) {
+            return false;
+        }
+
+        $reviews = [];
+        foreach ($this->getReviews() as $review) {
+            $reviews[$review->getReviewer()->getName()][] = $review->isApproved();
+        }
+
+        foreach ($reviews as $name => $review) {
+            if (!array_pop($review)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

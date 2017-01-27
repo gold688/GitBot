@@ -5,10 +5,10 @@ namespace Dgame\GitBot\Github\Api;
 use Github\Api\AbstractApi;
 
 /**
- * Class Reviewer
+ * Class RequestedReviewer
  * @package Dgame\GitBot\Github\Api
  */
-final class Reviewer extends AbstractApi
+final class RequestedReviewer extends AbstractApi
 {
     /**
      * @param string $username

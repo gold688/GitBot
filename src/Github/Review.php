@@ -62,11 +62,11 @@ final class Review
     }
 
     /**
-     * @return Reviewer
+     * @return RequestedReviewer
      */
-    public function getReviewer(): Reviewer
+    public function getReviewer(): RequestedReviewer
     {
-        return new Reviewer($this->review['user']);
+        return new RequestedReviewer($this->review['user']);
     }
 
     /**
@@ -96,8 +96,16 @@ final class Review
     /**
      * @return bool
      */
-    public function isDismissed(): bool
+    public function isComment(): bool
     {
-        return $this->review['state'] === 'DISMISSED';
+        return $this->review['state'] === 'COMMENT';
+    }
+
+    /**
+     * @return bool
+     */
+    public function requestChanges(): bool
+    {
+        return $this->review['state'] = 'CHANGES_REQUESTED';
     }
 }

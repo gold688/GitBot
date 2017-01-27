@@ -2,6 +2,8 @@
 
 namespace Dgame\GitBot\Github;
 
+use Dgame\GitBot\Registry;
+
 /**
  * Class RequestedReviewer
  * @package Dgame\GitBot\Github
@@ -9,54 +11,44 @@ namespace Dgame\GitBot\Github;
 final class RequestedReviewer
 {
     /**
-     * @var Review[]
-     */
-    private $reviews = [];
-    /**
-     * @var Reviewer[]
+     * @var array
      */
     private $reviewer = [];
 
     /**
-     * RequestedReviewer constructor.
+     * Assignee constructor.
      *
-     * @param PullRequest $request
+     * @param array $reviewer
      */
-    public function __construct(PullRequest $request)
+    public function __construct(array $reviewer)
     {
-        foreach ($request->getReviews() as $review) {
-            $this->reviews[$review->getReviewer()->getName()] = $review;
-        }
-        $this->reviewer = $request->getReviewer();
+        $this->reviewer = $reviewer;
     }
 
     /**
-     * @param PullRequest $request
+     * @param int $pull
      *
-     * @return RequestedReviewer
+     * @return array
      */
-    public static function of(PullRequest $request): self
+    public static function all(int $pull): array
     {
-        return new self($request);
+        $api        = Registry::instance()->getRequestedReviewerApi();
+        $repository = Registry::instance()->getRepositoryName();
+        $owner      = Registry::instance()->getRepositoryOwner();
+
+        $output = [];
+        foreach ($api->all($owner, $repository, $pull) as $reviewer) {
+            $output[] = new self($reviewer);
+        }
+
+        return $output;
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function haveAllApproved(): bool
+    public function getName(): string
     {
-        foreach ($this->reviewer as $reviewer) {
-            $name = $reviewer->getName();
-            if (!array_key_exists($name, $this->reviews)) {
-                return false;
-            }
-
-            $review = $this->reviews[$name];
-            if (!$review->isApproved()) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->reviewer['login'] ?? '';
     }
 }
