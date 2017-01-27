@@ -36,12 +36,12 @@ final class Review
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        $requests = [];
-        foreach ($api->all($owner, $repository, $pull) as $request) {
-            $requests[] = new self($request);
+        $output = [];
+        foreach ($api->all($owner, $repository, $pull) as $review) {
+            $output[] = new self($review);
         }
 
-        return $requests;
+        return $output;
     }
 
     /**
@@ -59,6 +59,14 @@ final class Review
         $request = $api->show($owner, $repository, $pull, $id);
 
         return new self($request);
+    }
+
+    /**
+     * @return Reviewer
+     */
+    public function getReviewer(): Reviewer
+    {
+        return new Reviewer($this->review['user']);
     }
 
     /**

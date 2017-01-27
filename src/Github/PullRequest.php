@@ -36,7 +36,7 @@ final class PullRequest
 
         $requests = [];
         foreach ($client->pullRequests()->all($owner, $repository) as $request) {
-            $requests[] = new self($request);
+            $requests[] = self::one($request['number']);
         }
 
         return $requests;
@@ -72,6 +72,27 @@ final class PullRequest
     public function getTitle(): string
     {
         return $this->request['title'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getAssignees(): array
+    {
+        $assignees = [];
+        foreach ($this->request['assignees'] as $assignee) {
+            $assignees[] = new Assignee($assignee);
+        }
+
+        return $assignees;
+    }
+
+    /**
+     * @return array
+     */
+    public function getReviewer(): array
+    {
+        return Reviewer::all($this->getId());
     }
 
     /**
@@ -127,13 +148,7 @@ final class PullRequest
      */
     public function isApproved(): bool
     {
-        foreach ($this->getReviews() as $review) {
-            if (!$review->isApproved()) {
-                return false;
-            }
-        }
-
-        return true;
+        return RequestedReviewer::of($this)->haveAllApproved();
     }
 
     /**

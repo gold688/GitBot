@@ -13,15 +13,15 @@ final class Review extends AbstractApi
     /**
      * @param string $username
      * @param string $repository
-     * @param int    $pull
-     * @param int    $review
+     * @param int    $number
+     * @param int    $id
      *
      * @return array
      */
-    public function show(string $username, string $repository, int $pull, int $review): array
+    public function show(string $username, string $repository, int $number, int $id): array
     {
         return $this->get(
-            '/repos/' . rawurlencode($username) . '/' . rawurlencode($repository) . '/pulls/' . $pull . '/reviews' . $review,
+            '/repos/' . rawurlencode($username) . '/' . rawurlencode($repository) . '/pulls/' . $number . '/reviews/' . $id,
             [],
             ['Accept' => 'application/vnd.github.black-cat-preview+json']
         );
@@ -30,14 +30,14 @@ final class Review extends AbstractApi
     /**
      * @param string $username
      * @param string $repository
-     * @param int    $pull
+     * @param int    $number
      *
      * @return array
      */
-    public function all(string $username, string $repository, int $pull): array
+    public function all(string $username, string $repository, int $number): array
     {
         return $this->get(
-            '/repos/' . rawurlencode($username) . '/' . rawurlencode($repository) . '/pulls/' . $pull . '/reviews',
+            '/repos/' . rawurlencode($username) . '/' . rawurlencode($repository) . '/pulls/' . $number . '/reviews',
             [],
             ['Accept' => 'application/vnd.github.black-cat-preview+json']
         );

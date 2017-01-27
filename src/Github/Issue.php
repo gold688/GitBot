@@ -37,7 +37,7 @@ final class Issue
 
         $issues = [];
         foreach ($client->issues()->all($owner, $repository) as $issue) {
-            $issues[] = new self($issue);
+            $issues[] = self::one($issue['number']);
         }
 
         return $issues;
@@ -73,6 +73,19 @@ final class Issue
     public function getTitle(): string
     {
         return $this->issue['title'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getAssignees(): array
+    {
+        $assignees = [];
+        foreach ($this->issue['assignees'] as $assignee) {
+            $assignees[] = new Assignee($assignee);
+        }
+
+        return $assignees;
     }
 
     /**

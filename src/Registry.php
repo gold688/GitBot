@@ -3,6 +3,7 @@
 namespace Dgame\GitBot;
 
 use Dgame\GitBot\Github\Api\Review;
+use Dgame\GitBot\Github\Api\Reviewer;
 use Dgame\GitBot\Github\Api\Status;
 use Github\Client;
 
@@ -101,6 +102,14 @@ final class Registry
     public function getReviewApi(): Review
     {
         return new Review($this->client);
+    }
+
+    /**
+     * @return Reviewer
+     */
+    public function getReviewerApi(): Reviewer
+    {
+        return new Reviewer($this->client);
     }
 
     /**
