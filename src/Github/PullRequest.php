@@ -236,6 +236,14 @@ final class PullRequest
     }
 
     /**
+     * @return Issue
+     */
+    public function getIssue(): Issue
+    {
+        return Issue::one($this->getNumber());
+    }
+
+    /**
      * @param string $message
      * @param string $title
      */

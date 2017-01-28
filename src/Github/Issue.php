@@ -196,7 +196,7 @@ final class Issue
      * @return PullRequest
      * @throws Exception
      */
-    public function asPullRequest(): PullRequest
+    public function getPullRequest(): PullRequest
     {
         if (!$this->isPullRequest()) {
             throw new Exception('That is not a PullRequest');
