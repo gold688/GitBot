@@ -3,6 +3,7 @@
 namespace Dgame\GitBot\Github;
 
 use Dgame\GitBot\Registry;
+use Exception;
 
 /**
  * Class PullRequest
@@ -23,6 +24,22 @@ final class PullRequest
     public function __construct(array $request)
     {
         $this->request = $request;
+    }
+
+    /**
+     * @param string $json
+     *
+     * @return PullRequest
+     * @throws Exception
+     */
+    public static function load(string $json): self
+    {
+        $assoc = json_decode($json, true);
+        if (is_array($assoc) && json_last_error() === JSON_ERROR_NONE) {
+            return new self($assoc);
+        }
+
+        throw new Exception(json_last_error_msg());
     }
 
     /**
@@ -61,9 +78,17 @@ final class PullRequest
     /**
      * @return int
      */
-    public function getId(): int
+    public function getNumber(): int
     {
         return $this->request['number'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->request['url'];
     }
 
     /**
@@ -72,6 +97,19 @@ final class PullRequest
     public function getTitle(): string
     {
         return $this->request['title'];
+    }
+
+    /**
+     * @return Assignee
+     * @throws Exception
+     */
+    public function getAssignee(): Assignee
+    {
+        if (is_array($this->request['assignee'])) {
+            return new Assignee($this->request['assignee']);
+        }
+
+        throw new Exception('There is no Assignee');
     }
 
     /**
@@ -92,7 +130,7 @@ final class PullRequest
      */
     public function getRequestedReviewers(): array
     {
-        return RequestedReviewer::all($this->getId());
+        return RequestedReviewer::all($this->getNumber());
     }
 
     /**
@@ -148,7 +186,7 @@ final class PullRequest
      */
     public function getReviews(): array
     {
-        return Review::all($this->getId());
+        return Review::all($this->getNumber());
     }
 
     /**
@@ -207,7 +245,7 @@ final class PullRequest
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        $client->pullRequest()->merge($owner, $repository, $this->getId(), $message, $this->getSha(), 'merge', $title);
+        $client->pullRequest()->merge($owner, $repository, $this->getNumber(), $message, $this->getSha(), 'merge', $title);
     }
 
     /**
@@ -219,7 +257,7 @@ final class PullRequest
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        $client->pullRequest()->update($owner, $repository, $this->getId(), ['state' => 'open']);
+        $client->pullRequest()->update($owner, $repository, $this->getNumber(), ['state' => 'open']);
         $this->request['state'] = 'open';
     }
 
@@ -232,7 +270,7 @@ final class PullRequest
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        $client->pullRequest()->update($owner, $repository, $this->getId(), ['state' => 'closed']);
+        $client->pullRequest()->update($owner, $repository, $this->getNumber(), ['state' => 'closed']);
         $this->request['state'] = 'closed';
     }
 }

@@ -3,6 +3,7 @@
 namespace Dgame\GitBot\Github;
 
 use Dgame\GitBot\Registry;
+use Exception;
 
 /**
  * Class Status
@@ -23,6 +24,22 @@ final class Status
     public function __construct(array $status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @param string $json
+     *
+     * @return Status
+     * @throws Exception
+     */
+    public static function load(string $json): self
+    {
+        $assoc = json_decode($json, true);
+        if (is_array($assoc) && json_last_error() === JSON_ERROR_NONE) {
+            return new self($assoc);
+        }
+
+        throw new Exception(json_last_error_msg());
     }
 
     /**

@@ -1,0 +1,72 @@
+{
+    "url": "https://api.github.com/repos/Dgame/test/issues/1",
+    "repository_url": "https://api.github.com/repos/Dgame/test",
+    "labels_url": "https://api.github.com/repos/Dgame/test/issues/1/labels{/name}",
+    "comments_url": "https://api.github.com/repos/Dgame/test/issues/1/comments",
+    "events_url": "https://api.github.com/repos/Dgame/test/issues/1/events",
+    "html_url": "https://github.com/Dgame/test/pull/1",
+    "id": 203213106,
+    "number": 1,
+    "title": "EOL",
+    "user": {
+        "login": "Dgame",
+        "id": 2406877,
+        "avatar_url": "https://avatars.githubusercontent.com/u/2406877?v=3",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/Dgame",
+        "html_url": "https://github.com/Dgame",
+        "followers_url": "https://api.github.com/users/Dgame/followers",
+        "following_url": "https://api.github.com/users/Dgame/following{/other_user}",
+        "gists_url": "https://api.github.com/users/Dgame/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/Dgame/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/Dgame/subscriptions",
+        "organizations_url": "https://api.github.com/users/Dgame/orgs",
+        "repos_url": "https://api.github.com/users/Dgame/repos",
+        "events_url": "https://api.github.com/users/Dgame/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/Dgame/received_events",
+        "type": "User",
+        "site_admin": false
+    },
+    "labels": [
+        {
+            "id": 525982035,
+            "url": "https://api.github.com/repos/Dgame/test/labels/bug",
+            "name": "bug",
+            "color": "ee0701",
+            "default": true
+        },
+        {
+            "id": 525982036,
+            "url": "https://api.github.com/repos/Dgame/test/labels/duplicate",
+            "name": "duplicate",
+            "color": "cccccc",
+            "default": true
+        },
+        {
+            "id": 525982040,
+            "url": "https://api.github.com/repos/Dgame/test/labels/question",
+            "name": "question",
+            "color": "cc317c",
+            "default": true
+        }
+    ],
+    "state": "open",
+    "locked": false,
+    "assignee": null,
+    "assignees": [
+
+    ],
+    "milestone": null,
+    "comments": 0,
+    "created_at": "2017-01-25T20:27:11Z",
+    "updated_at": "2017-01-25T20:29:49Z",
+    "closed_at": null,
+    "pull_request": {
+        "url": "https://api.github.com/repos/Dgame/test/pulls/1",
+        "html_url": "https://github.com/Dgame/test/pull/1",
+        "diff_url": "https://github.com/Dgame/test/pull/1.diff",
+        "patch_url": "https://github.com/Dgame/test/pull/1.patch"
+    },
+    "body": "",
+    "closed_by": null
+}

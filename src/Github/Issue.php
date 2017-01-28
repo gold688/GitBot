@@ -27,6 +27,22 @@ final class Issue
     }
 
     /**
+     * @param string $json
+     *
+     * @return Issue
+     * @throws Exception
+     */
+    public static function load(string $json): self
+    {
+        $assoc = json_decode($json, true);
+        if (is_array($assoc) && json_last_error() === JSON_ERROR_NONE) {
+            return new self($assoc);
+        }
+
+        throw new Exception(json_last_error_msg());
+    }
+
+    /**
      * @return Issue[]
      */
     public static function all(): array
@@ -62,9 +78,17 @@ final class Issue
     /**
      * @return int
      */
-    public function getId(): int
+    public function getNumber(): int
     {
         return $this->issue['number'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->issue['url'];
     }
 
     /**
@@ -73,6 +97,48 @@ final class Issue
     public function getTitle(): string
     {
         return $this->issue['title'];
+    }
+
+    /**
+     * @return Label[]
+     */
+    public function getLabels(): array
+    {
+        $labels = [];
+        foreach ($this->issue['labels'] as $label) {
+            $labels[] = new Label($label);
+        }
+
+        return $labels;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasLabel(string $name): bool
+    {
+        foreach ($this->getLabels() as $label) {
+            if ($label->getName() === $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return Assignee
+     * @throws Exception
+     */
+    public function getAssignee(): Assignee
+    {
+        if (is_array($this->issue['assignee'])) {
+            return new Assignee($this->issue['assignee']);
+        }
+
+        throw new Exception('There is no Assignee');
     }
 
     /**
@@ -112,7 +178,7 @@ final class Issue
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        return $this->issue['html_url'] === 'https://github.com/' . implode('/', [$owner, $repository, 'pull', $this->getId()]);
+        return $this->issue['html_url'] === 'https://github.com/' . implode('/', [$owner, $repository, 'pull', $this->getNumber()]);
     }
 
     /**
@@ -123,7 +189,7 @@ final class Issue
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        return $this->issue['html_url'] === 'https://github.com/' . implode('/', [$owner, $repository, 'issues', $this->getId()]);
+        return $this->issue['html_url'] === 'https://github.com/' . implode('/', [$owner, $repository, 'issues', $this->getNumber()]);
     }
 
     /**
@@ -136,7 +202,7 @@ final class Issue
             throw new Exception('That is not a PullRequest');
         }
 
-        return PullRequest::one($this->getId());
+        return PullRequest::one($this->getNumber());
     }
 
     /**
@@ -148,7 +214,7 @@ final class Issue
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        $client->issue()->update($owner, $repository, $this->getId(), ['state' => 'open']);
+        $client->issue()->update($owner, $repository, $this->getNumber(), ['state' => 'open']);
         $this->issue['state'] = 'open';
     }
 
@@ -161,7 +227,7 @@ final class Issue
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        $client->issue()->update($owner, $repository, $this->getId(), ['state' => 'closed']);
+        $client->issue()->update($owner, $repository, $this->getNumber(), ['state' => 'closed']);
         $this->issue['state'] = 'closed';
     }
 }

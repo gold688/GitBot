@@ -3,6 +3,7 @@
 namespace Dgame\GitBot\Github;
 
 use Dgame\GitBot\Registry;
+use Exception;
 
 /**
  * Class RequestedReviewer
@@ -23,6 +24,22 @@ final class RequestedReviewer
     public function __construct(array $reviewer)
     {
         $this->reviewer = $reviewer;
+    }
+
+    /**
+     * @param string $json
+     *
+     * @return RequestedReviewer
+     * @throws Exception
+     */
+    public static function load(string $json): self
+    {
+        $assoc = json_decode($json, true);
+        if (is_array($assoc) && json_last_error() === JSON_ERROR_NONE) {
+            return new self($assoc);
+        }
+
+        throw new Exception(json_last_error_msg());
     }
 
     /**
