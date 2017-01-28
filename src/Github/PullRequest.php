@@ -152,6 +152,24 @@ final class PullRequest
     }
 
     /**
+     * @return Review[]
+     */
+    public function getLastReviews(): array
+    {
+        $assoc = [];
+        foreach ($this->getReviews() as $review) {
+            $assoc[$review->getReviewer()->getName()][] = $review;
+        }
+
+        $reviews = [];
+        foreach ($assoc as $name => $review) {
+            $reviews[] = array_pop($review);
+        }
+
+        return $reviews;
+    }
+
+    /**
      * @return bool
      */
     public function isApproved(): bool
@@ -160,13 +178,8 @@ final class PullRequest
             return false;
         }
 
-        $reviews = [];
-        foreach ($this->getReviews() as $review) {
-            $reviews[$review->getReviewer()->getName()][] = $review->isApproved();
-        }
-
-        foreach ($reviews as $name => $review) {
-            if (!array_pop($review)) {
+        foreach ($this->getLastReviews() as $review) {
+            if (!$review->isApproved()) {
                 return false;
             }
         }
