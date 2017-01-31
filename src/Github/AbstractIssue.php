@@ -3,7 +3,6 @@
 namespace Dgame\GitBot\Github;
 
 use DateTime;
-use Dgame\GitBot\Registry;
 use Exception;
 
 /**
@@ -25,6 +24,14 @@ abstract class AbstractIssue
     public function __construct(array $issue)
     {
         $this->issue = $issue;
+    }
+
+    /**
+     * @return User
+     */
+    final public function getUser(): User
+    {
+        return new User($this->issue['user']);
     }
 
     /**
@@ -118,19 +125,19 @@ abstract class AbstractIssue
     }
 
     /**
-     * @return string
+     * @return Milestone|null
      */
-    final public function milestone(): string
+    final public function milestone(): ?Milestone
     {
-        return $this->issue['milestone'] ?? '';
+        return !empty($this->issue['milestone']) ? new Milestone($this->issue['milestone']) : null;
     }
 
     /**
-     * @return string
+     * @return User|null
      */
-    final public function closedBy(): string
+    final public function closedBy(): ?User
     {
-        return $this->issue['closed_by'] ?? '';
+        return !empty($this->issue['closed_by']) ? new User($this->issue['closed_by']) : null;
     }
 
     /**
