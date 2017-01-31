@@ -2,8 +2,8 @@
 
 namespace Dgame\GitBot;
 
-use Dgame\GitBot\Github\Api\Review;
 use Dgame\GitBot\Github\Api\RequestedReviewer;
+use Dgame\GitBot\Github\Api\Review;
 use Dgame\GitBot\Github\Api\Status;
 use Github\Client;
 
@@ -70,14 +70,18 @@ final class Registry
 
     /**
      * @param string $name
+     */
+    public function setRepositoryName(string $name): void
+    {
+        $this->repository['name'] = $name;
+    }
+
+    /**
      * @param string $owner
      */
-    public function setRepository(string $name, string $owner): void
+    public function setRepositoryOwner(string $owner): void
     {
-        $this->repository = [
-            'name'  => $name,
-            'owner' => $owner
-        ];
+        $this->repository['owner'] = $owner;
     }
 
     /**

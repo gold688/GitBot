@@ -2,6 +2,7 @@
 
 namespace Dgame\GitBot\Github;
 
+use DateTime;
 use Dgame\GitBot\Registry;
 use Exception;
 
@@ -62,6 +63,22 @@ final class Status
     }
 
     /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->status['url'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isError(): bool
+    {
+        return $this->status['state'] === 'error';
+    }
+
+    /**
      * @return bool
      */
     public function isFailure(): bool
@@ -83,5 +100,53 @@ final class Status
     public function isSuccess(): bool
     {
         return $this->status['state'] === 'success';
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->status['description'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTargetUrl(): string
+    {
+        return $this->status['target_url'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getContext(): string
+    {
+        return $this->status['context'];
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function createdAt(): DateTime
+    {
+        return new DateTime($this->status['created_at']);
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function updatedAt(): DateTime
+    {
+        return new DateTime($this->status['updated_at']);
+    }
+
+    /**
+     * @return User
+     */
+    public function getCreator(): User
+    {
+        return new User($this->status['creator']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Dgame\GitBot\Github;
 
+use DateTime;
 use Dgame\GitBot\Registry;
 use Exception;
 
@@ -60,19 +61,73 @@ final class PullRequest
     }
 
     /**
-     * @param int $id
+     * @param int $number
      *
      * @return PullRequest
      */
-    public static function one(int $id): self
+    public static function one(int $number): self
     {
         $client     = Registry::instance()->getClient();
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        $request = $client->pullRequest()->show($owner, $repository, $id);
+        $request = $client->pullRequest()->show($owner, $repository, $number);
 
         return new self($request);
+    }
+
+    /**
+     * @param PullRequest $request
+     *
+     * @return PullRequest
+     */
+    public static function open(self $request): self
+    {
+        $client     = Registry::instance()->getClient();
+        $repository = Registry::instance()->getRepositoryName();
+        $owner      = Registry::instance()->getRepositoryOwner();
+        $number     = $request->getNumber();
+
+        $client->pullRequest()->update($owner, $repository, $number, ['state' => 'open']);
+
+        return self::one($number);
+    }
+
+    /**
+     * @param PullRequest $request
+     *
+     * @return PullRequest
+     */
+    public static function close(self $request): self
+    {
+        $client     = Registry::instance()->getClient();
+        $repository = Registry::instance()->getRepositoryName();
+        $owner      = Registry::instance()->getRepositoryOwner();
+        $number     = $request->getNumber();
+
+        $client->pullRequest()->update($owner, $repository, $number, ['state' => 'closed']);
+
+        return self::one($number);
+    }
+
+    /**
+     * @param PullRequest $request
+     * @param string      $message
+     * @param string|null $title
+     *
+     * @return PullRequest
+     */
+    public static function merge(self $request, string $message, string $title = null): self
+    {
+        $client     = Registry::instance()->getClient();
+        $repository = Registry::instance()->getRepositoryName();
+        $owner      = Registry::instance()->getRepositoryOwner();
+        $number     = $request->getNumber();
+        $sha        = $request->getSha();
+
+        $client->pullRequest()->merge($owner, $repository, $number, $message, $sha, 'merge', $title);
+
+        return self::one($number);
     }
 
     /**
@@ -166,11 +221,107 @@ final class PullRequest
     }
 
     /**
+     * @return DateTime
+     */
+    public function createdAt(): DateTime
+    {
+        return new DateTime($this->request['created_at']);
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function updatedAt(): DateTime
+    {
+        return new DateTime($this->request['updated_at']);
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function closedAt(): ?DateTime
+    {
+        return !empty($this->request['closed_at']) ? new DateTime($this->request['closed_at']) : null;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function mergedAt(): ?DateTime
+    {
+        return !empty($this->request['merged_at']) ? new DateTime($this->request['merged_at']) : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function milestone(): string
+    {
+        return $this->request['milestone'] ?? '';
+    }
+
+    /**
      * @return bool
      */
     public function isMergeable(): bool
     {
         return (bool) $this->request['mergeable'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMerged(): bool
+    {
+        return $this->request['merged'] ?? false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMergeableState(): string
+    {
+        return $this->request['mergeable_state'] ?? '';
+    }
+
+    /**
+     * @return string
+     */
+    public function mergedBy(): string
+    {
+        return $this->request['merged_by'] ?? '';
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountOfCommits(): int
+    {
+        return $this->request['commits'];
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountOfAdditions(): int
+    {
+        return $this->request['additions'];
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountOfDeletions(): int
+    {
+        return $this->request['deletions'];
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountOfChangedFiles(): int
+    {
+        return $this->request['changed_files'];
     }
 
     /**
@@ -241,44 +392,5 @@ final class PullRequest
     public function getIssue(): Issue
     {
         return Issue::one($this->getNumber());
-    }
-
-    /**
-     * @param string $message
-     * @param string $title
-     */
-    public function merge(string $message, string $title): void
-    {
-        $client     = Registry::instance()->getClient();
-        $repository = Registry::instance()->getRepositoryName();
-        $owner      = Registry::instance()->getRepositoryOwner();
-
-        $client->pullRequest()->merge($owner, $repository, $this->getNumber(), $message, $this->getSha(), 'merge', $title);
-    }
-
-    /**
-     * (re)open pull-request
-     */
-    public function open(): void
-    {
-        $client     = Registry::instance()->getClient();
-        $repository = Registry::instance()->getRepositoryName();
-        $owner      = Registry::instance()->getRepositoryOwner();
-
-        $client->pullRequest()->update($owner, $repository, $this->getNumber(), ['state' => 'open']);
-        $this->request['state'] = 'open';
-    }
-
-    /**
-     * close pull-request
-     */
-    public function close(): void
-    {
-        $client     = Registry::instance()->getClient();
-        $repository = Registry::instance()->getRepositoryName();
-        $owner      = Registry::instance()->getRepositoryOwner();
-
-        $client->pullRequest()->update($owner, $repository, $this->getNumber(), ['state' => 'closed']);
-        $this->request['state'] = 'closed';
     }
 }

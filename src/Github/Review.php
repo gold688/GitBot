@@ -43,18 +43,18 @@ final class Review
     }
 
     /**
-     * @param int $pull
+     * @param int $number
      *
      * @return Review[]
      */
-    public static function all(int $pull): array
+    public static function all(int $number): array
     {
         $api        = Registry::instance()->getReviewApi();
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
         $output = [];
-        foreach ($api->all($owner, $repository, $pull) as $review) {
+        foreach ($api->all($owner, $repository, $number) as $review) {
             $output[] = new self($review);
         }
 
@@ -62,18 +62,18 @@ final class Review
     }
 
     /**
-     * @param int $pull
+     * @param int $number
      * @param int $id
      *
      * @return Review
      */
-    public static function one(int $pull, int $id): self
+    public static function one(int $number, int $id): self
     {
         $api        = Registry::instance()->getReviewApi();
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        $request = $api->show($owner, $repository, $pull, $id);
+        $request = $api->show($owner, $repository, $number, $id);
 
         return new self($request);
     }

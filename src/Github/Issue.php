@@ -2,6 +2,7 @@
 
 namespace Dgame\GitBot\Github;
 
+use DateTime;
 use Dgame\GitBot\Registry;
 use Exception;
 
@@ -60,19 +61,53 @@ final class Issue
     }
 
     /**
-     * @param int $id
+     * @param int $number
      *
      * @return Issue
      */
-    public static function one(int $id): self
+    public static function one(int $number): self
     {
         $client     = Registry::instance()->getClient();
         $repository = Registry::instance()->getRepositoryName();
         $owner      = Registry::instance()->getRepositoryOwner();
 
-        $issue = $client->issues()->show($owner, $repository, $id);
+        $issue = $client->issues()->show($owner, $repository, $number);
 
         return new self($issue);
+    }
+
+    /**
+     * @param Issue $issue
+     *
+     * @return Issue
+     */
+    public static function open(self $issue): self
+    {
+        $client     = Registry::instance()->getClient();
+        $repository = Registry::instance()->getRepositoryName();
+        $owner      = Registry::instance()->getRepositoryOwner();
+        $number     = $issue->getNumber();
+
+        $client->issue()->update($owner, $repository, $number, ['state' => 'open']);
+
+        return self::one($number);
+    }
+
+    /**
+     * @param Issue $issue
+     *
+     * @return Issue
+     */
+    public static function close(self $issue): self
+    {
+        $client     = Registry::instance()->getClient();
+        $repository = Registry::instance()->getRepositoryName();
+        $owner      = Registry::instance()->getRepositoryOwner();
+        $number     = $issue->getNumber();
+
+        $client->issue()->update($owner, $repository, $number, ['state' => 'closed']);
+
+        return self::one($number);
     }
 
     /**
@@ -171,6 +206,54 @@ final class Issue
     }
 
     /**
+     * @return DateTime
+     */
+    public function createdAt(): DateTime
+    {
+        return new DateTime($this->issue['created_at']);
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function updatedAt(): DateTime
+    {
+        return new DateTime($this->issue['updated_at']);
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function closedAt(): ?DateTime
+    {
+        return !empty($this->issue['closed_at']) ? new DateTime($this->issue['closed_at']) : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function milestone(): string
+    {
+        return $this->issue['milestone'] ?? '';
+    }
+
+    /**
+     * @return string
+     */
+    public function closedBy(): string
+    {
+        return $this->issue['closed_by'] ?? '';
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmountOfComments(): int
+    {
+        return $this->issue['comments'];
+    }
+
+    /**
      * @return bool
      */
     public function isPullRequest(): bool
@@ -203,31 +286,5 @@ final class Issue
         }
 
         return PullRequest::one($this->getNumber());
-    }
-
-    /**
-     * (Re)open issue
-     */
-    public function open(): void
-    {
-        $client     = Registry::instance()->getClient();
-        $repository = Registry::instance()->getRepositoryName();
-        $owner      = Registry::instance()->getRepositoryOwner();
-
-        $client->issue()->update($owner, $repository, $this->getNumber(), ['state' => 'open']);
-        $this->issue['state'] = 'open';
-    }
-
-    /**
-     * Close issue
-     */
-    public function close(): void
-    {
-        $client     = Registry::instance()->getClient();
-        $repository = Registry::instance()->getRepositoryName();
-        $owner      = Registry::instance()->getRepositoryOwner();
-
-        $client->issue()->update($owner, $repository, $this->getNumber(), ['state' => 'closed']);
-        $this->issue['state'] = 'closed';
     }
 }
