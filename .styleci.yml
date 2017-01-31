@@ -3,3 +3,4 @@ preset: psr2
 disabled:
  - elseif
  - no_trailing_whitespace
+ - single_blank_line_at_eof
