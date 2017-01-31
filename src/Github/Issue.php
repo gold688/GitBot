@@ -2,7 +2,6 @@
 
 namespace Dgame\GitBot\Github;
 
-use DateTime;
 use Dgame\GitBot\Registry;
 use Exception;
 
@@ -10,23 +9,8 @@ use Exception;
  * Class Issue
  * @package Dgame\GitBot\Github
  */
-final class Issue
+final class Issue extends AbstractIssue
 {
-    /**
-     * @var array
-     */
-    private $issue = [];
-
-    /**
-     * Issue constructor.
-     *
-     * @param array $issue
-     */
-    public function __construct(array $issue)
-    {
-        $this->issue = $issue;
-    }
-
     /**
      * @param string $json
      *
@@ -111,30 +95,6 @@ final class Issue
     }
 
     /**
-     * @return int
-     */
-    public function getNumber(): int
-    {
-        return $this->issue['number'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrl(): string
-    {
-        return $this->issue['url'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->issue['title'];
-    }
-
-    /**
      * @return Label[]
      */
     public function getLabels(): array
@@ -161,96 +121,6 @@ final class Issue
         }
 
         return false;
-    }
-
-    /**
-     * @return Assignee
-     * @throws Exception
-     */
-    public function getAssignee(): Assignee
-    {
-        if (is_array($this->issue['assignee'])) {
-            return new Assignee($this->issue['assignee']);
-        }
-
-        throw new Exception('There is no Assignee');
-    }
-
-    /**
-     * @return array
-     */
-    public function getAssignees(): array
-    {
-        $assignees = [];
-        foreach ($this->issue['assignees'] as $assignee) {
-            $assignees[] = new Assignee($assignee);
-        }
-
-        return $assignees;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isOpen(): bool
-    {
-        return $this->issue['state'] === 'open';
-    }
-
-    /**
-     * @return bool
-     */
-    public function isClosed(): bool
-    {
-        return $this->issue['state'] === 'closed';
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function createdAt(): DateTime
-    {
-        return new DateTime($this->issue['created_at']);
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function updatedAt(): DateTime
-    {
-        return new DateTime($this->issue['updated_at']);
-    }
-
-    /**
-     * @return DateTime|null
-     */
-    public function closedAt(): ?DateTime
-    {
-        return !empty($this->issue['closed_at']) ? new DateTime($this->issue['closed_at']) : null;
-    }
-
-    /**
-     * @return string
-     */
-    public function milestone(): string
-    {
-        return $this->issue['milestone'] ?? '';
-    }
-
-    /**
-     * @return string
-     */
-    public function closedBy(): string
-    {
-        return $this->issue['closed_by'] ?? '';
-    }
-
-    /**
-     * @return int
-     */
-    public function getAmountOfComments(): int
-    {
-        return $this->issue['comments'];
     }
 
     /**

@@ -10,23 +10,8 @@ use Exception;
  * Class PullRequest
  * @package Dgame\GitBot\Github
  */
-final class PullRequest
+final class PullRequest extends AbstractIssue
 {
-    /**
-     * @var array
-     */
-    private $request = [];
-
-    /**
-     * PullRequest constructor.
-     *
-     * @param array $request
-     */
-    public function __construct(array $request)
-    {
-        $this->request = $request;
-    }
-
     /**
      * @param string $json
      *
@@ -131,56 +116,6 @@ final class PullRequest
     }
 
     /**
-     * @return int
-     */
-    public function getNumber(): int
-    {
-        return $this->request['number'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrl(): string
-    {
-        return $this->request['url'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->request['title'];
-    }
-
-    /**
-     * @return Assignee
-     * @throws Exception
-     */
-    public function getAssignee(): Assignee
-    {
-        if (is_array($this->request['assignee'])) {
-            return new Assignee($this->request['assignee']);
-        }
-
-        throw new Exception('There is no Assignee');
-    }
-
-    /**
-     * @return array
-     */
-    public function getAssignees(): array
-    {
-        $assignees = [];
-        foreach ($this->request['assignees'] as $assignee) {
-            $assignees[] = new Assignee($assignee);
-        }
-
-        return $assignees;
-    }
-
-    /**
      * @return array
      */
     public function getRequestedReviewers(): array
@@ -197,51 +132,11 @@ final class PullRequest
     }
 
     /**
-     * @return bool
-     */
-    public function isOpen(): bool
-    {
-        return $this->request['state'] === 'open';
-    }
-
-    /**
-     * @return bool
-     */
-    public function isClosed(): bool
-    {
-        return $this->request['state'] === 'closed';
-    }
-
-    /**
      * @return string
      */
     public function getSha(): string
     {
-        return $this->request['head']['sha'];
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function createdAt(): DateTime
-    {
-        return new DateTime($this->request['created_at']);
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function updatedAt(): DateTime
-    {
-        return new DateTime($this->request['updated_at']);
-    }
-
-    /**
-     * @return DateTime|null
-     */
-    public function closedAt(): ?DateTime
-    {
-        return !empty($this->request['closed_at']) ? new DateTime($this->request['closed_at']) : null;
+        return $this->issue['head']['sha'];
     }
 
     /**
@@ -249,15 +144,7 @@ final class PullRequest
      */
     public function mergedAt(): ?DateTime
     {
-        return !empty($this->request['merged_at']) ? new DateTime($this->request['merged_at']) : null;
-    }
-
-    /**
-     * @return string
-     */
-    public function milestone(): string
-    {
-        return $this->request['milestone'] ?? '';
+        return !empty($this->issue['merged_at']) ? new DateTime($this->issue['merged_at']) : null;
     }
 
     /**
@@ -265,7 +152,7 @@ final class PullRequest
      */
     public function isMergeable(): bool
     {
-        return (bool) $this->request['mergeable'];
+        return (bool) $this->issue['mergeable'];
     }
 
     /**
@@ -273,7 +160,7 @@ final class PullRequest
      */
     public function isMerged(): bool
     {
-        return $this->request['merged'] ?? false;
+        return $this->issue['merged'] ?? false;
     }
 
     /**
@@ -281,7 +168,7 @@ final class PullRequest
      */
     public function getMergeableState(): string
     {
-        return $this->request['mergeable_state'] ?? '';
+        return $this->issue['mergeable_state'] ?? '';
     }
 
     /**
@@ -289,7 +176,7 @@ final class PullRequest
      */
     public function mergedBy(): string
     {
-        return $this->request['merged_by'] ?? '';
+        return $this->issue['merged_by'] ?? '';
     }
 
     /**
@@ -297,7 +184,7 @@ final class PullRequest
      */
     public function getAmountOfCommits(): int
     {
-        return $this->request['commits'];
+        return $this->issue['commits'];
     }
 
     /**
@@ -305,7 +192,7 @@ final class PullRequest
      */
     public function getAmountOfAdditions(): int
     {
-        return $this->request['additions'];
+        return $this->issue['additions'];
     }
 
     /**
@@ -313,7 +200,7 @@ final class PullRequest
      */
     public function getAmountOfDeletions(): int
     {
-        return $this->request['deletions'];
+        return $this->issue['deletions'];
     }
 
     /**
@@ -321,7 +208,7 @@ final class PullRequest
      */
     public function getAmountOfChangedFiles(): int
     {
-        return $this->request['changed_files'];
+        return $this->issue['changed_files'];
     }
 
     /**
