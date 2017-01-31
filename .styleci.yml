@@ -1,7 +1,5 @@
 preset: psr2
 
-enabled:
- - no_trailing_whitespace
-
 disabled:
  - elseif
+ - no_trailing_whitespace
